@@ -59,8 +59,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          shopt -s nullglob
-          pkgs=(output/*.conda output/*.tar.bz2)
+          mapfile -t pkgs < <(find output -type f \( -name '*.conda' -o -name '*.tar.bz2' \))
           if [ ${#pkgs[@]} -eq 0 ]; then
             echo "No packages to upload"
             exit 0
