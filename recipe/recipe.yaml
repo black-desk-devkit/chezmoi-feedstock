@@ -10,13 +10,17 @@ source:
   sha256: 52a2fbff0c11285bac91b9267bce0f48069153c111890debf61836953dfcbca8
 
 build:
-  number: 0
+  number: 1
   skip: win
   dynamic_linking:
     overlinking_behavior: error
     overdepending_behavior: error
   script:
-    - CGO_ENABLED=0 go build -trimpath -ldflags="-s -w -X main.version=${{ version }}" -o $PREFIX/bin/chezmoi .
+    - CGO_ENABLED=0 go build -trimpath -ldflags="-s -w -X main.version=${{ version }}" -o chezmoi .
+    - install -Dm755 chezmoi $PREFIX/bin/chezmoi
+    - install -Dm644 completions/chezmoi-completion.bash $PREFIX/share/bash-completion/completions/chezmoi
+    - install -Dm644 completions/chezmoi.zsh $PREFIX/share/zsh/site-functions/_chezmoi
+    - install -Dm644 completions/chezmoi.fish $PREFIX/share/fish/vendor_completions.d/chezmoi.fish
 
 requirements:
   build:
@@ -26,6 +30,11 @@ requirements:
 tests:
   - script:
       - chezmoi --version
+  - package_contents:
+      files:
+        - share/bash-completion/completions/chezmoi
+        - share/zsh/site-functions/_chezmoi
+        - share/fish/vendor_completions.d/chezmoi.fish
 
 about:
   homepage: https://chezmoi.io
