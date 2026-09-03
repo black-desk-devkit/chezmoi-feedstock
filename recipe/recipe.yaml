@@ -1,0 +1,36 @@
+context:
+  version: "2.72.1"
+
+package:
+  name: chezmoi
+  version: ${{ version }}
+
+source:
+  url: https://github.com/twpayne/chezmoi/archive/refs/tags/v${{ version }}.tar.gz
+  sha256: 52a2fbff0c11285bac91b9267bce0f48069153c111890debf61836953dfcbca8
+
+build:
+  number: 0
+  skip: win
+  script:
+    - CGO_ENABLED=0 go build -trimpath -ldflags="-s -w -X main.version=${{ version }}" -o $PREFIX/bin/chezmoi .
+
+requirements:
+  build:
+    - go >=1.26
+  run: []
+
+tests:
+  - script:
+      - chezmoi --version
+
+about:
+  homepage: https://chezmoi.io
+  summary: Manage your dotfiles across multiple diverse machines, securely.
+  license: MIT
+  license_file: LICENSE
+  repository: https://github.com/twpayne/chezmoi
+
+extra:
+  recipe-maintainers:
+    - black-desk
