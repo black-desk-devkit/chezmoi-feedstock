@@ -31,7 +31,21 @@ jobs:
           recipe-path: recipe/recipe.yaml
           artifact-name: pkg-${{ matrix.target-platform }}
           build-args: >-
+            -c conda-forge
             --target-platform ${{ matrix.target-platform }}
+            --error-prefix-in-binary
+
+      - name: Test package (single-channel)
+        shell: bash
+        run: |
+          set -euo pipefail
+          pkg=$(find output -name '*.conda' | head -1)
+          if [ -z "$pkg" ]; then
+            echo "::error::No .conda package found in output/"
+            exit 1
+          fi
+          echo "Testing: $pkg"
+          rattler-build test -c https://prefix.dev/black-desk "$pkg"
 
   upload:
     name: Upload to prefix.dev
