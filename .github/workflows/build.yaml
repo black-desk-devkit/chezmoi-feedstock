@@ -35,7 +35,7 @@ jobs:
             --target-platform ${{ matrix.target-platform }}
             --error-prefix-in-binary
 
-      - name: Test package (single-channel)
+      - name: Test package (black-desk + conda-forge)
         shell: bash
         run: |
           set -euo pipefail
@@ -45,7 +45,10 @@ jobs:
             exit 1
           fi
           echo "Testing: $pkg"
-          rattler-build test -c https://prefix.dev/black-desk --package-file "$pkg"
+          rattler-build test \
+            -c https://prefix.dev/black-desk \
+            -c conda-forge \
+            --package-file "$pkg"
 
   upload:
     name: Upload to prefix.dev
